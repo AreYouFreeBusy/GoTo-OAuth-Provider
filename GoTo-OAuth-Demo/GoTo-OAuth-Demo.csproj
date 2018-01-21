@@ -257,7 +257,7 @@
   <ItemGroup>
     <ProjectReference Include="..\GoTo-OAuth-Provider\GoTo-OAuth-Provider.csproj">
       <Project>{40ed6dc4-bda4-4580-855c-a2a9d3e9fdd7}</Project>
-      <Name>AzureAD-OAuth-Provider</Name>
+      <Name>GoTo-OAuth-Provider</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
