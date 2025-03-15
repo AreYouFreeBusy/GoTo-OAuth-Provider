@@ -22,7 +22,7 @@ namespace Owin.Security.Providers.GoTo
         /// <param name="user">The JSON-serialized user</param>
         /// <param name="accessToken">GoTo access token</param>
         public GoToAuthenticatedContext(
-            IOwinContext context, string accessToken, string expires, string refreshToken, JObject userJson) 
+            IOwinContext context, string accessToken, string expires, string refreshToken, string email, JObject userJson) 
             : base(context)
         {
             AccessToken = accessToken;
@@ -34,13 +34,12 @@ namespace Owin.Security.Providers.GoTo
                 ExpiresIn = TimeSpan.FromSeconds(expiresValue);
             }
 
-            // per https://goto-developer.logmeininc.com/how-get-access-token-and-organizer-key
-            UserId = userJson["organizer_key"]?.Value<string>();            
-            AccountId = userJson["account_key"]?.Value<string>();
-            AccountType = userJson["account_type"]?.Value<string>();
-            Email = userJson["email"]?.Value<string>();
-            GivenName = userJson["firstName"]?.Value<string>();
-            Surname = userJson["lastName"]?.Value<string>();
+            // per https://developer.goto.com/Authentication/#section/Authorization-Flows/Authorization-Code-Grant
+            Email = email;
+            // per https://developer.goto.com/Scim/#tag/Users/operation/getMe
+            UserId = userJson["id"]?.Value<string>();
+            GivenName = userJson["name"]?["givenName"]?.Value<string>();
+            Surname = userJson["name"]?["familyName"]?.Value<string>();
         }
 
         /// <summary>
@@ -82,16 +81,6 @@ namespace Owin.Security.Providers.GoTo
         /// Gets the user's last name
         /// </summary>
         public string Surname { get; private set; }
-
-        /// <summary>
-        /// Gets the GoTo user ID
-        /// </summary>
-        public string AccountId { get; private set; }
-
-        /// <summary>
-        /// Gets the email address
-        /// </summary>
-        public string AccountType { get; private set; }
 
         /// <summary>
         /// Gets the <see cref="ClaimsIdentity"/> representing the user

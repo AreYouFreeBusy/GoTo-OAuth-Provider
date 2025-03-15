@@ -86,10 +86,6 @@ namespace GoTo_OAuth_Demo
                         {
                             // do something with UserId
                         }
-                        if (!String.IsNullOrEmpty(context.AccountId)) 
-                        {
-                            // do something with AccountId
-                        }
                         if (!String.IsNullOrEmpty(context.GivenName)) 
                         {
                             // do something with first name

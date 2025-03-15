@@ -20,8 +20,9 @@ namespace Owin.Security.Providers.GoTo
     public class GoToAuthenticationHandler : AuthenticationHandler<GoToAuthenticationOptions>
     {
         // see https://goto-developer.logmeininc.com/how-get-access-token-and-organizer-key for docs 
-        private const string AuthorizeEndpoint = "https://api.getgo.com/oauth/v2/authorize";
-        private const string TokenEndpoint = "https://api.getgo.com/oauth/v2/token";
+        private const string AuthorizeEndpoint = "https://authentication.logmeininc.com/oauth/authorize";
+        private const string TokenEndpoint = "https://authentication.logmeininc.com/oauth/token";
+        private const string UserInfoEndpoint = "https://api.getgo.com/identity/v1/Users/me";
         private const string XmlSchemaString = "http://www.w3.org/2001/XMLSchema#string";
 
         private readonly HttpClient _httpClient;
@@ -98,8 +99,19 @@ namespace Owin.Security.Providers.GoTo
                 string accessToken = response.Value<string>("access_token");
                 string expires = response.Value<string>("expires_in");
                 string refreshToken = response.Value<string>("refresh_token");
+                string email = response.Value<string>("principal");
 
-                var context = new GoToAuthenticatedContext(Context, accessToken, expires, refreshToken, response);
+                JObject userJson = null;
+                var userRequest = new HttpRequestMessage(HttpMethod.Get, UserInfoEndpoint);
+                userRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+                var userResponse = await _httpClient.SendAsync(userRequest);
+                var userContent = await userResponse.Content.ReadAsStringAsync();
+                if (userResponse.IsSuccessStatusCode)
+                {
+                    userJson = JObject.Parse(userContent);
+                }
+
+                var context = new GoToAuthenticatedContext(Context, accessToken, expires, refreshToken, email, userJson);
                 context.Identity = new ClaimsIdentity(
                     Options.AuthenticationType,
                     ClaimsIdentity.DefaultNameClaimType,

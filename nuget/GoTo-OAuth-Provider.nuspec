@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>Owin.Security.Providers.GoTo</id>
-    <version>1.1</version>
+    <version>1.2</version>
     <title>Owin.Security.Providers.GoTo</title>
     <authors>Stefan Negritoiu (FreeBusy)</authors>
     <owners>Stefan Negritoiu (FreeBusy)</owners>
@@ -15,6 +15,7 @@
     <releaseNotes>
 1.0: Introducing GoTo OAuth provider for OWIN to use with ASP.NET 4.5
 1.1: Update for v2 endpoints
+1.2: Update for 2024 endpoints
     </releaseNotes>
     <copyright>Copyright 2017 Stefan Negritoiu</copyright>
     <tags>owin katana oauth asp.net gotomeeting gotowebinar gotoassist logmein</tags>
